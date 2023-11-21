@@ -1,4 +1,3 @@
-```markdown
 # Linked List Operations
 
 This Java program demonstrates basic operations on a linked list. The linked list class includes methods to insert values, check if a value is present, print the list, and perform a search-and-move operation.
