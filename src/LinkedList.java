@@ -1,6 +1,5 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.util.Random;
 
 class LinkedList {
     Node head;
@@ -40,12 +39,19 @@ class LinkedList {
     // Method to print the linked list
     public void printList() {
         Node current = head;
+
+        System.out.print("[");
         while (current != null) {
-            System.out.print(current.data + " ");
+            System.out.print(current.data);
             current = current.next;
+
+            if (current != null) {
+                System.out.print(", ");
+            }
         }
-        System.out.println();
+        System.out.println("]");
     }
+
 
     // Method to read values from a file and insert them into the linked list
     public void readFromFile(String filename) {
@@ -63,17 +69,63 @@ class LinkedList {
         }
     }
 
-
-    public int search(int value) {
-        int memoryAccesses = 0;
-        Node current = head;
-        while (current != null) {
-            memoryAccesses++; // Counting memory access
-            if (current.data == value) {
-                return memoryAccesses;
+    public  void  addRandomValuesToTxt(String filename){
+        filename = filename + ".txt";
+        try(BufferedWriter writer   = new BufferedWriter(new FileWriter(filename));){
+            Random random = new Random();
+            for (int i = 0; i < 10000 ; i++) {
+                int value = random.nextInt(300);
+                writer.write(value+",");
             }
+
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+    public void moveToBeginning(int value) {
+        Node current = head;
+        Node prev = null;
+
+        // Search for the node with the specified value
+        while (current != null && current.data != value) {
+            prev = current;
             current = current.next;
         }
+
+        // If the value is found and it's not already at the beginning
+        if (current != null && prev != null) {
+            prev.next = current.next; // Remove the node from its current position
+
+            // Move the node to the beginning
+            current.next = head;
+            head = current;
+        } else if (current != null && prev == null) {
+            // The node is already at the beginning
+            // No need to change anything
+        }
+    }
+
+    // Method to search for a value in the linked list and move it to the beginning
+    public int searchAndMove(int value) {
+        int memoryAccesses = 0;
+        Node current = head;
+        Node prev = null;
+
+        while (current != null) {
+            memoryAccesses++; // Counting memory access
+
+            if (current.data == value) {
+                moveToBeginning(value); // Move the value to the beginning of the list
+                return memoryAccesses;
+            }
+
+            prev = current;
+            current = current.next;
+        }
+
         return -1; // Value not found
     }
 
@@ -88,7 +140,7 @@ class LinkedList {
                 String[] values = line.split(",");
                 for (String val : values) {
                     int value = Integer.parseInt(val);
-                    int memoryAccesses = search(value);
+                    int memoryAccesses = searchAndMove(value);
                     if (memoryAccesses != -1) {
                         totalMemoryAccesses += memoryAccesses;
                         totalValues++;
@@ -105,58 +157,8 @@ class LinkedList {
         System.out.println("Total Values Found: " + totalValues);
         System.out.println("Average Memory Accesses per Value: " + averageMemoryAccesses);
     }
-
-
-    // Method to move a specific value to the beginning of the linked list
-    public void moveToBeginning(int value) {
-        Node current = head;
-        Node prev = null;
-
-        // Search for the node with the specified value
-        while (current != null && current.data != value) {
-            prev = current;
-            current = current.next;
-        }
-
-        // If the value is found and it's not already the first node, move it to the beginning
-        if (current != null && prev != null) {
-            prev.next = current.next; // Remove the node from its current position
-
-            // Move the node to the beginning
-            current.next = head;
-            head = current;
-        } else if (current != null && prev == null) {
-            System.out.println("Already first node");
-        }
-    }
-
-
-    // Method to search for a value in the linked list and move it to the beginning
-    public int searchAndMove(int value) {
-        int memoryAccesses = 0;
-        Node current = head;
-        Node prev = null;
-
-        while (current != null) {
-            memoryAccesses++; // Counting memory access
-            System.out.println("Memory Access #" + memoryAccesses + ": Checking Node with Data " + current.data);
-
-            if (current.data == value) {
-                System.out.println("Value " + value + " found!");
-                moveToBeginning(value); // Move the value to the beginning of the list
-                return memoryAccesses;
-            }
-
-            prev = current;
-            current = current.next;
-        }
-
-        System.out.println("Value " + value + " not found!");
-        return -1; // Value not found
-    }
-
-    // ... (previous methods remain unchanged)
 }
+
 
 
 
