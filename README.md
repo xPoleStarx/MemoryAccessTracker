@@ -37,6 +37,3 @@ The `Node` class represents a node in the linked list. Each node contains an int
 - The `searchAndMove` method searches for values in the linked list and moves them to the beginning if found.
 
 - The program demonstrates file I/O operations, random value generation, and basic linked list manipulations.
-
-Feel free to modify and extend the code as needed for your specific requirements.
-```
